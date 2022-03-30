@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { SurveysRoutingModule } from './surveys-routing.module';
 import { SurveysComponent } from './surveys.component';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpClientService } from '../../shared/services/http-client-service/http-client.service';
 import { MatButtonModule } from '@angular/material/button'
 import { MatListModule } from '@angular/material/list';
+import { SurveyHttpClientService } from '../../shared/services/survey-http-client-service/survey-http-client.service';
 
 
 @NgModule({
@@ -28,7 +28,7 @@ import { MatListModule } from '@angular/material/list';
   ],
   //les services dont j'ai besoin pour ce component
   providers: [
-    HttpClientService
+    SurveyHttpClientService
   ],
 })
 export class SurveysModule { }

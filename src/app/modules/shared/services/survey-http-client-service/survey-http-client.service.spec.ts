@@ -1,21 +1,20 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
-import { defer, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { defer } from 'rxjs';
 import { ISurvey } from 'src/app/models/isurvey';
+import { URL_LOCAL_QUIZZ } from '../../constants/url-constant';
+import { SurveyHttpClientService } from './survey-http-client.service';
 
 
-import { HttpClientService } from './http-client.service';
 
 describe('HttpClientService', () => {
 
-  let service: HttpClientService;
+  let service: SurveyHttpClientService;
   let httpClientSpy: jasmine.SpyObj<HttpClient>;
-  const url = 'http://localhost:8081/quizz';
 
   beforeEach(() => {
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
 
-    service = new HttpClientService(httpClientSpy);
+    service = new SurveyHttpClientService(httpClientSpy);
   });
 
 
@@ -23,8 +22,9 @@ describe('HttpClientService', () => {
     expect(service).toBeTruthy();
   });
 
+ 
 
-  it('see number of call of GET method httpCLientSerivce', () => {
+  it('one call of GET method httpCLientSerivce', () => {
     //GIVEN
     const surveys: ISurvey[] = [{id: '1', name: 'survey1' },
      {id: '2', name: 'survey2' },
@@ -33,9 +33,9 @@ describe('HttpClientService', () => {
     httpClientSpy.get.and.returnValue(defer(() => surveys));
 
     //WHEN
-    service.get(url + '/surveys');
+    service.getSurveysHttp(URL_LOCAL_QUIZZ + '/surveys');
     //THEN
-    expect(service.get.call.length).withContext('one call').toBe(1);
+    expect(service.getSurveysHttp.call.length).withContext('one call').toBe(1);
     
 
   });

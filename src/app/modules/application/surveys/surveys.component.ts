@@ -1,57 +1,34 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ISurvey } from 'src/app/models/isurvey';
-import { ERROR_MESSAGE } from '../../shared/constants/errors-constants';
-import { HttpClientService } from '../../shared/services/http-client-service/http-client.service';
+import { SURVEYS } from '../../shared/constants/endpoints-constants';
+import { URL_LOCAL_QUIZZ } from '../../shared/constants/url-constant';
+import { SurveyHttpClientService } from '../../shared/services/survey-http-client-service/survey-http-client.service';
 
-const URL: string = 'http://localhost:8081/quizz';
+
 
 @Component({
   selector: 'app-surveys',
   templateUrl: './surveys.component.html',
-  styleUrls: ['./surveys.component.css']
+  styleUrls: ['./surveys.component.css'],
+
 })
+// good practice rxjs
+// https://blog.strongbrew.io/rxjs-best-practices-in-angular/
+// https://blog.angular-university.io/angular-http/
 
 // https://angular.io/guide/lazy-loading-ngmodules#preloading
 // si besoin un jour d'attendre un chargement de donné avant d'afficher une page
 export class SurveysComponent implements OnInit {
-  loaded: boolean = false;
-  surveys: Array<ISurvey> = Array();
-  error: boolean = false;
-  errorMessage: string = ERROR_MESSAGE;
-  
 
-  private subscription: Subscription = new Subscription;
+  surveys$: Observable<ISurvey[]> = new Observable();
 
   constructor(
-    private httpClientService: HttpClientService) {
-    this.loaded = false;
-  }
+    private surveyHttpClientService: SurveyHttpClientService)
+    {  
+    }
 
   ngOnInit(): void {
-    this.subscription.add(this.getSurveysSubcription());
-  }
-
-  //TODO: refacto into service?
-  getSurveysSubcription(): Subscription {
-    this.loaded = false;
-    return this.httpClientService.get(URL + '/surveys')
-      .subscribe({
-        next: (surveys: Array<ISurvey>) => {
-          console.log(surveys);
-          this.surveys = surveys;
-          this.loaded = true;
-        },
-        error: (survey: Array<ISurvey>) => {
-          this.error = true;
-          console.error('ERROR getSurveys ' + survey);
-          
-        },
-      });
-  }
-
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.surveys$ = this.surveyHttpClientService.getSurveysHttp(URL_LOCAL_QUIZZ + SURVEYS);
   }
 }
